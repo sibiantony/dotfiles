@@ -1,0 +1,52 @@
+{
+  "useTaobaoRegistry": true,
+  "packageManager": "yarn",
+  "presets": {
+    "Typescript-ClassStyle-CSS-UnitTest-E2ETest": {
+      "useConfigFiles": true,
+      "plugins": {
+        "@vue/cli-plugin-babel": {},
+        "@vue/cli-plugin-typescript": {
+          "classComponent": true,
+          "useTsWithBabel": true
+        },
+        "@vue/cli-plugin-router": {
+          "historyMode": true
+        },
+        "@vue/cli-plugin-eslint": {
+          "config": "base",
+          "lintOn": [
+            "save"
+          ]
+        },
+        "@vue/cli-plugin-unit-mocha": {},
+        "@vue/cli-plugin-e2e-cypress": {}
+      },
+      "vueVersion": "2",
+      "cssPreprocessor": "dart-sass"
+    },
+    "test": {
+      "useConfigFiles": true,
+      "plugins": {
+        "@vue/cli-plugin-babel": {},
+        "@vue/cli-plugin-typescript": {
+          "classComponent": true,
+          "useTsWithBabel": true
+        },
+        "@vue/cli-plugin-router": {
+          "historyMode": true
+        },
+        "@vue/cli-plugin-eslint": {
+          "config": "standard",
+          "lintOn": [
+            "save"
+          ]
+        },
+        "@vue/cli-plugin-unit-mocha": {}
+      },
+      "vueVersion": "2"
+    }
+  },
+  "latestVersion": "5.0.4",
+  "lastChecked": 1653324730193
+}
