@@ -1,0 +1,108 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+export EDITOR=vim
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+
+resizeall() {
+        if [[ $# -eq 1 ]]; then
+                dir=$1
+        else
+                echo "Usage : resizeall <directory>"
+		return
+	fi
+	
+	cd $dir
+	for file in *; 
+	do 
+		echo $file; 
+		convert -resize 30% $file scaled_$file; 
+	done
+	cd -
+}
+
+
+search() {
+	if [[ $# -lt 1 ]]; then
+		echo "Usage search <string>";
+		return 1
+	fi
+	
+	find . -exec grep -i "$@" {} \; -print 2>/dev/null
+}
+
+javasearch() {
+	if [[ $# -lt 1 ]]; then
+		echo "Usage search <string>";
+		return 1
+	fi
+	
+	find . -name "*.java" -exec grep -i "$@" {} \; -print 2>/dev/null
+}
+
+cert() {
+	[[ $# -lt 1 ]] && echo "Usage cert <cert-file-or-string>" && return 1
+	[[ -f $1 ]] && openssl x509 -in $1 -noout -text && return 0
+	echo "$1" | sed 's/ //g' | base64 -d | openssl x509 -noout -text -in - -inform DER
+}
+
+powerscale() {
+	SCALING_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+	[[ $SCALING_GOVERNOR = "powersave" ]] && echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor >/dev/null
+	[[ $SCALING_GOVERNOR = "performance" ]] && echo powersave | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor >/dev/null
+	echo `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+}
+
+screenshot() {
+	[[ $1 == ?(-)+([:digit:]) ]] && SLEEP=$1 || SLEEP=3
+	sleep $SLEEP
+	import -window root ~/Pictures/Screenshot-`date +'%Y-%m-%d-%H-%M-%S'`.png
+}
+
+genpasswd() {
+	local l=$1
+       	[ "$l" == "" ] && l=24
+      	tr -dc "A-Za-z0-9_@%+-,[]=?./" < /dev/urandom | head -c ${l} | xargs
+}
+
+gain() {
+	[[ $# -lt 2 ]] && echo "Usage ${FUNCNAME[0]} <num1> <num2>" && return 1
+	if [[ "$1" =~  ^[0-9]+(\.[0-9]+)?$ ]] && [[ "$2" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+		echo "scale=2; ($2-$1)*100/$1" | bc
+	else
+		echo "Invalid number[s]."
+		return 1
+	fi
+}
+
+
+. "$HOME/.acme.sh/acme.sh.env"
+alias audacity='audacity 2>/dev/null '
+alias se='search'
+alias jse='javasearch'
+alias clip='xclip -sel clip'
+alias bc='bc -l'
+
+# Undocumented feature which sets the size to "unlimited".
+export HISTFILESIZE=
+export HISTSIZE=
+export PATH=$HOME/.cargo/bin:$PATH
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export BC_ENV_ARGS=$HOME/.bc
+
