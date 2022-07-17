@@ -89,6 +89,10 @@ gain() {
 	fi
 }
 
+scan_epson_630() {
+	[[ $# -lt 1 ]] && echo "Usage $0 <file-name>" && return 1
+	scanimage --device "airscan:e0:EPSON XP-630 Series" --format=png --output-file $1 --progress
+}
 
 . "$HOME/.acme.sh/acme.sh.env"
 alias audacity='audacity 2>/dev/null '
@@ -96,6 +100,7 @@ alias se='search'
 alias jse='javasearch'
 alias clip='xclip -sel clip'
 alias bc='bc -l'
+alias scan='scan_epson_630'
 
 # Undocumented feature which sets the size to "unlimited".
 export HISTFILESIZE=
