@@ -10,7 +10,6 @@ if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
-export PATH
 
 export EDITOR=vim
 
@@ -105,7 +104,7 @@ alias scan='scan_epson_630'
 # Undocumented feature which sets the size to "unlimited".
 export HISTFILESIZE=
 export HISTSIZE=
-export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$GOPATH/bin:/usr/local/go/bin:$HOME/.cargo/bin:$PATH
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
