@@ -59,6 +59,27 @@ cert() {
 	echo "$1" | sed 's/ //g' | base64 -d | openssl x509 -noout -text -in - -inform DER
 }
 
+archive() {
+        # Usage: archive.sh ./directory
+        [[ $# -lt 1 ]] && echo "Usage $0 <directory>" && return 1
+
+        SOURCE=$( realpath --relative-to=${PWD} $1 )
+        ARCHIVE_BASE=$( basename $SOURCE )
+        ARCHIVE=${ARCHIVE_BASE}.tar.xz
+        ARCHIVE_METADATA=${ARCHIVE}_metadata.txt
+        [[ ! -d $SOURCE ]] && echo "Directory $SOURCE doesn't exist!" && return 1
+        [[ -f $ARCHIVE ]] && echo "There exists archive file $ARCHIVE" && return 1
+
+        echo "* Create tar archive with xz"
+        SOURCE_SIZE=$(du -sk "${SOURCE}" | cut -f1)
+        tar -cf - "${SOURCE}" | pv -s "${SOURCE_SIZE}k" | xz -6 --threads=6 -c - >$ARCHIVE
+        echo "* Record sha256 checksum"
+        echo -e "sha256sum : `sha256sum $ARCHIVE` \n\n" >${ARCHIVE_METADATA}
+        echo "* Record filenames and timestamps"
+        tar -tvf ${ARCHIVE} >>${ARCHIVE_METADATA}
+        echo "* Written : $ARCHIVE $ARCHIVE_METADATA"
+}
+
 powerscale() {
 	SCALING_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 	[[ $SCALING_GOVERNOR = "powersave" ]] && echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor >/dev/null
