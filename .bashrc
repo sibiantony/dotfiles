@@ -120,6 +120,7 @@ alias se='search'
 alias jse='javasearch'
 alias clip='xclip -sel clip'
 alias bc='bc -l'
+alias df='df -hT'
 alias scan='scan_epson_630'
 
 # Undocumented feature which sets the size to "unlimited".
